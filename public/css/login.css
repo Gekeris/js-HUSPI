@@ -63,9 +63,9 @@ body{
 	background: #1dbf73;
 }
 
-.form .input_wrap .error_msg{
+.error_msg{
 	font-size: 15px;
 	margin-bottom: 5px;
-	color: #b79906;
+	color: gold;
 	display: inline-block;
 }

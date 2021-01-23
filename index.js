@@ -1,7 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const MongoClient = require('mongodb').MongoClient;
-const format = require('util').format;
 const session = require('express-session');
 const datatime = require('node-datetime');
 
@@ -50,12 +49,7 @@ app.post('/', urlEncodedParser, function (req, res) {
       console.log("login result: " + result);
 
       if (login_successful) {
-        if (result.role == "admin") {
-          req.session.role = "admin";
-        }
-        else {
-          req.session.role = "user";
-        }
+        req.session.role = result.role;
         req.session.email = result.email;
         res.redirect('/');
       }
@@ -65,6 +59,16 @@ app.post('/', urlEncodedParser, function (req, res) {
       client.close();
     });
   });
+});
+
+app.use(function(req, res, next) {
+  if (req.session.role) {
+    next();
+  }
+  else {
+    console.log("unauthorized user - redirect to login");
+    res.redirect('/');
+  }
 });
 
 app.get('/logout', function (req, res) {
@@ -107,6 +111,37 @@ app.post('/complete', urlEncodedParser, function (req, res) {
       });
     });
   });
+});
+
+app.post('/createTodo', urlEncodedParser, function (req, res) {
+  res.render("createTodo")
+});
+
+app.post('/newTodo', urlEncodedParser, function (req, res) {
+  if (req.body.Name.length > 0 && req.body.Text.length > 0) {
+    var todo = {
+      email: req.session.email,
+      Name: req.body.Name,
+	    Data: "",
+	    Completed: false,
+	    Text: req.body.Text
+	  };
+    console.log("todo.Name " + todo.Name);
+    console.log("todo.Text " + todo.Text);
+    MongoClient.connect('mongodb://localhost:27017', function (err, client) {
+      client.db('todos').collection('todo').insertOne(todo, function (err, result) {
+        if (err) {
+          console.log(err);
+          return;
+        }
+        client.close();
+        res.redirect('/');
+      });
+    });
+  }
+  else {
+    res.render('createTodo', { empty_fields: true });
+  }
 });
 
 // app.use(function(req, res, next) {
