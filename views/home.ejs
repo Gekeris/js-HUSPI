@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"></head>
+	<title>Todos</title>
+	<link rel="stylesheet" type="text/css" href="/public/css/content.css">
+	<link rel="stylesheet" type="text/css" href="/public/css/todos.css">
+</head>
+<body>
+	<%- include ('header.ejs', {role: role}) %>
+	<div class="wrapper">
+		<div class="content">
+			<% if (todosList.length > 0) { %>
+				<ul class="todos">
+				<% locals.todosList.forEach(function(todo) { %>
+					<form action="/complete" method="post">
+						<% if( todo.Completed ) { %>
+							<li class="cmp">
+						<% } else { %>
+							<li class="notcmp">
+						<%}; %>
+							<div class="info">
+								<span class="Name"><%- todo.Name %></span>
+								<span class="Data"><%- todo.Data %></span>
+							</div>
+							<label>
+								<% if( todo.Completed ) { %>
+									<input name="completedCheckbox" type="checkbox" checked="true">
+									<span class="span_completed"><%- todo.Text %></span>
+								<% } else { %>
+									<input name="completedCheckbox" type="checkbox">
+									<span><%- todo.Text %></span>
+								<%}; %>
+								<input type="hidden" value="<%-todo._id%>" name="todo_id">
+								<% if( todo.Completed ) { %>
+									<button class="cmp" type="submit">Сохранить</button>
+								<% } else { %>
+									<button class="notcmp" type="submit">Сохранить</button>
+								<%}; %>
+							</label>
+						</li>
+					</form>
+				<%}); %>
+				</ul>
+			<% } else { %>
+			<h1> No todos :( </h1>
+			<% }; %>
+			<form class="createTodoForm" action="/createTodo" method="post">
+				<button class="notcmp" type="submit">Create Todo</button>
+			</form>
+		</div>
+	</div>
+</body>
+</html>

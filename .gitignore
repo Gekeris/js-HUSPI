@@ -1,0 +1,9 @@
+/DB/journal/*
+/DB/diagnostic.data/*
+filldb.js
+filldb_todo.js
+rmdb.js
+rmdb_todo.js
+showdb.js
+showdb_todo.js
+/node_modules/*

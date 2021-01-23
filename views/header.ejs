@@ -1,0 +1,16 @@
+<link rel="stylesheet" type="text/css" href="/public/css/header.css">
+<div class="header">
+	<div class="inner_header">
+		<div class="welcome">
+			<h1>Todos</h1>
+		</div>
+		<ul class="navigation">
+			<a href="/"><li>Home</li></a>
+			<% if(role == "admin") { %>
+			<a href="/userlist"><li>User List</li></a>
+			<% }; %>
+			<a href="/profile"><li>Profile</li></a>
+			<a href="/logout"><li>Logout</li></a>
+		</ul>
+	</div>
+</div>

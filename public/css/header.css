@@ -1,0 +1,51 @@
+*{
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	text-decoration: none;
+}
+
+.header{
+	width: 100%;
+	height: 80px;
+	display: block;
+	background-color: #274690;
+}
+
+.inner_header{
+	width: 80%;
+	height: 100%;
+	display: block;
+	margin: 0 auto;
+}
+
+.welcome{
+	float: left;
+	height: 100%;
+	display: table;
+}
+
+.welcome h1{
+	color: #F5F3F5;
+	vertical-align: middle;
+	display: table-cell;
+}
+
+.navigation{
+	float: right;
+	height: 100%;
+}
+
+.navigation a{
+	color: #F5F3F5;
+	float: left;
+	height: 100%;
+	display: table;
+	padding: 0 20px;
+}
+
+.navigation a li{
+	display: table-cell;
+	vertical-align: middle;
+	font-size: 18px;
+}

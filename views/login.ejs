@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"></head>
+	<title>Login</title>
+	<link rel="stylesheet" type="text/css" href="/public/css/login.css">
+</head>
+<body>
+	<div class="wrapper">
+		<div class="form">
+			<div class="title">Login</div>
+			<form method="post" action="/">
+				<div class="input_wrap">
+					<label for="input_text">Email</label>
+					<div class="input_field">
+						<input type="text" class="input" id="input_text" name="email">
+					</div>
+				</div>
+				<div class="input_wrap">
+					<label for="input_password">Password</label>
+					<div class="input_field">
+						<input type="password" class="input" id="input_password" name="password">
+					</div>
+				</div>
+				<div class="input_wrap">
+					<% if(locals.login_failed) { %>
+					<span class="error_msg">Incorrect username or password. Please try again.</span>
+					<% }; %>
+					<input type="submit" id="login_btn" class="btn" value="LOGIN">
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<script type="text/javascript" src="JS/index.js"></script>
+</body>
+</html>
