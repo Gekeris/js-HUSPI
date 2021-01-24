@@ -59,8 +59,16 @@ body{
 	border-color: black;
 }
 
-.form .input_wrap .btn{
+.form .input_wrap #login_btn{
 	background: #1dbf73;
+}
+
+.form .input_wrap #signUp_btn{
+	background: darkred;
+}
+
+.form .input_wrap .btn{
+	margin-top: 10px;
 }
 
 .error_msg{

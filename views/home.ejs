@@ -13,7 +13,7 @@
 			<% if (todosList.length > 0) { %>
 				<ul class="todos">
 				<% locals.todosList.forEach(function(todo) { %>
-					<form action="/complete" method="post">
+					<form action="/editTodoList" method="post">
 						<% if( todo.Completed ) { %>
 							<li class="cmp">
 						<% } else { %>
@@ -25,17 +25,17 @@
 							</div>
 							<label>
 								<% if( todo.Completed ) { %>
-									<input name="completedCheckbox" type="checkbox" checked="true">
+									<input name="completedCheckbox" type="checkbox" checked="true" onChange="this.form.action = '/complete'; this.form.submit('')">
 									<span class="span_completed"><%- todo.Text %></span>
 								<% } else { %>
-									<input name="completedCheckbox" type="checkbox">
+									<input name="completedCheckbox" type="checkbox" onChange="this.form.action = '/complete'; this.form.submit('')">
 									<span><%- todo.Text %></span>
 								<%}; %>
 								<input type="hidden" value="<%-todo._id%>" name="todo_id">
 								<% if( todo.Completed ) { %>
-									<button class="cmp" type="submit">Сохранить</button>
+									<button class="cmp" type="submit">Edit</button>
 								<% } else { %>
-									<button class="notcmp" type="submit">Сохранить</button>
+									<button class="notcmp" type="submit">Edit</button>
 								<%}; %>
 							</label>
 						</li>

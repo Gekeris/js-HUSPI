@@ -26,7 +26,11 @@
 					<% if(locals.login_failed) { %>
 					<span class="error_msg">Incorrect username or password. Please try again.</span>
 					<% }; %>
-					<input type="submit" id="login_btn" class="btn" value="LOGIN">
+					<% if(locals.signUp_failed) { %>
+					<span class="error_msg">This account is already exist</span>
+					<% }; %>
+					<input type="submit" id="signUp_btn" class="btn" value="SIGN UP" onclick="this.form.action = '/signUp'; this.form.method = 'get';">
+					<input type="submit" id="login_btn" class="btn" value="LOGIN" onclick="this.form.action = '/'; this.form.method = 'post';">
 				</div>
 			</form>
 		</div>

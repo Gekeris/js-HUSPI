@@ -10,6 +10,13 @@
 	background: #576ca8;
 }
 
+.error_msg{
+	font-size: 15px;
+	margin-bottom: 5px;
+	color: gold;
+	display: inline-block;
+}
+
 .input_wrap{
 	margin-bottom: 20px;
 	width: 325px;
@@ -50,14 +57,14 @@ textarea:focus{
 	border-color: black;
 }
 
-.createBtn{
+.submitBtn{
   width: 100%;
   margin-top: 30px;
   justify-content: flex-end;
   display: flex;
 }
 
-.createBtn input{
+.submitBtn input{
   width: auto;
   background: #1dbf73;
   padding: 10px;
@@ -65,9 +72,7 @@ textarea:focus{
   border: 0px;
 }
 
-.error_msg{
-	font-size: 15px;
-	margin-bottom: 5px;
-	color: gold;
-	display: inline-block;
-}
+.submitBtn .btn {
+	background: darkred;
+	margin-right: 15px;
+};

@@ -4,7 +4,7 @@
 	<meta charset="utf-8"></head>
 	<title>Todos</title>
 	<link rel="stylesheet" type="text/css" href="/public/css/content.css">
-	<link rel="stylesheet" type="text/css" href="/public/css/createTodo.css">
+	<link rel="stylesheet" type="text/css" href="/public/css/editTodo.css">
 </head>
 <body>
 	<%- include ('header.ejs', {role: "admin"}) %>
@@ -17,18 +17,26 @@
 				<div class="input_wrap">
 					<label for="input_text">Name</label>
 					<div class="input_field">
-						<input type="text" class="input" id="input_text" name="Name">
+						<input type="text" class="input" id="input_text" name="Name" value="<%- locals.Name %>">
 					</div>
 				</div>
 				<div class="text_input">
 					<label for="input_wrap">Text</label>
 					<div class="input_field">
-						<textarea Name="Text" style="resize: none;"></textarea>
+						<textarea Name="Text" style="resize: none;"><%- locals.Text %></textarea>
 					</div>
 				</div>
-				<div class="createBtn">
-					<input type="submit" class="btn" value="Create">
+				<% if (locals.Name && locals.Text) { %>
+					<div class="submitBtn">
+						<input type="hidden" value="<%- locals.todo_id %>" name="todo_id">
+						<input onclick="this.form.action = '/removeTodo'" type="submit" class="btn" value="Remove">
+						<input onclick="this.form.action = '/editTodo'" type="submit" value="Edit">
+					</div>
+				<% } else { %>
+				<div class="submitBtn">
+					<input type="submit" value="Create">
 				</div>
+				<% }; %>
 			</form>
 		</div>
 	</div>
