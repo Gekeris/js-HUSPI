@@ -1,15 +1,3 @@
-*{
-	margin: 0;
-	padding: 0;
-	box-sizing: border-box;
-	outline: none;
-	color: #F5F3F5;
-}
-
-.content{
-	background: #576ca8;
-}
-
 .error_msg{
 	font-size: 15px;
 	margin-bottom: 5px;
@@ -19,16 +7,15 @@
 
 .input_wrap{
 	margin-bottom: 20px;
-	width: 325px;
 	position: relative;
 }
 
-.content label{
+.input_wrap label{
 	display: block;
 	margin-bottom: 5px;
 }
 
-.content input{
+.input_wrap input{
 	padding: 15px;
 	width: 100%;
 	border: 1px solid transparent;
@@ -37,21 +24,10 @@
 	background: #768dcf;
 }
 
-textarea {
-	width: 100%;
-	padding: 15px;
-	border: 1px solid transparent;
-	font-size: 16px;
-	border-radius: 3px;
-	background: #768dcf;
-	height: 300px;
-}
 
-.content .input:focus{
-	border-color: black;
-}
 
-textarea:focus{
+
+.input_wrap .input:focus{
 	border-color: black;
 }
 
@@ -64,13 +40,29 @@ textarea:focus{
 
 .submitBtn input{
   width: auto;
-  background: #1dbf73;
   padding: 10px;
   font-size: 16pt;
   border: 0px;
+	margin-right: 15px;
+	border-radius: 3px;
 }
 
-.submitBtn .btn {
+.removeBtn {
 	background: darkred;
-	margin-right: 15px;
+}
+
+.editBtn {
+	background: #1dbf73;
+}
+
+.disableBtn {
+	background: #302B27 !important;
+}
+
+.enableBtn {
+	background: gold;
+}
+
+.todosBtn {
+	background: #1B264F;
 }

@@ -25,16 +25,20 @@
 							</div>
 							<label>
 								<% if( todo.Completed ) { %>
-									<input name="completedCheckbox" type="checkbox" checked="true" onChange="this.form.action = '/complete'; this.form.submit('')">
+									<% if(change) { %>
+										<input name="completedCheckbox" type="checkbox" checked="true" onChange="this.form.action = '/complete'; this.form.submit('')">
+									<% }; %>
 									<span class="span_completed"><%- todo.Text %></span>
 								<% } else { %>
-									<input name="completedCheckbox" type="checkbox" onChange="this.form.action = '/complete'; this.form.submit('')">
+									<% if (change) { %>
+										<input name="completedCheckbox" type="checkbox" onChange="this.form.action = '/complete'; this.form.submit('')">
+									<% }; %>
 									<span><%- todo.Text %></span>
 								<%}; %>
 								<input type="hidden" value="<%-todo._id%>" name="todo_id">
-								<% if( todo.Completed ) { %>
+								<% if( todo.Completed && change ) { %>
 									<button class="cmp" type="submit">Edit</button>
-								<% } else { %>
+								<% } else if (change) { %>
 									<button class="notcmp" type="submit">Edit</button>
 								<%}; %>
 							</label>
@@ -45,9 +49,11 @@
 			<% } else { %>
 			<h1> No todos :( </h1>
 			<% }; %>
-			<form class="createTodoForm" action="/createTodo" method="post">
-				<button type="submit">Create Todo</button>
-			</form>
+			<% if( change ) { %>
+				<form class="createTodoForm" action="/createTodo" method="post">
+					<button type="submit">Create Todo</button>
+				</form>
+			<%}; %>
 		</div>
 	</div>
 </body>

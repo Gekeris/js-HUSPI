@@ -13,6 +13,7 @@
     "express": "^4.17.1",
     "express-session": "^1.17.1",
     "mongodb": "^3.6.3",
-    "node-datetime": "^2.1.2"
+    "node-datetime": "^2.1.2",
+    "util": "^0.12.3"
   }
 }

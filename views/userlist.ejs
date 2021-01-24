@@ -4,14 +4,29 @@
 	<meta charset="utf-8"></head>
 	<title>Todos</title>
 	<link rel="stylesheet" type="text/css" href="/public/css/content.css">
+	<link rel="stylesheet" type="text/css" href="/public/css/userlist.css">
 </head>
 <body>
 	<%- include ('header.ejs', {role: "admin"}) %>
 	<div class="wrapper">
 		<div class="content">
-			<div class="title">
-				UserList
-			</div>
+			<ul>
+			<% userListArray.forEach(function(user) {  %>
+				<form action="/profile/<%- user._id %>" method="get">
+					<% if (user.active) { %>
+						<li>
+							<span><%- user.name %> <%- user.surname %> (<%- user.email %>)</span>
+							<button type="submit">Open Profile</button>
+						</li>
+					<% } else { %>
+						<li class="off">
+							<span><%- user.name %> <%- user.surname %> (<%- user.email %>)</span>
+							<button class="off" type="submit">Open Profile</button>
+						</li>
+					<% }%>
+				</form>
+			<%}) %>
+			</ul>
 		</div>
 	</div>
 </body>

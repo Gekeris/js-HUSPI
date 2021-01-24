@@ -1,0 +1,26 @@
+.content li {
+  background: #302B27;
+  border-radius: 3px;
+  padding: 10px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.content button {
+  background-color: #302B27;
+  border-color: grey;
+  border-width: 1px;
+  padding: 3px;
+}
+
+.content span {
+  display: inline-block;
+  text-align: center;
+  padding: 5px;
+}
+
+.content .off {
+  background-color: darkred;
+  border-color: gold;
+}

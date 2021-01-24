@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"></head>
+	<title>Todos</title>
+	<link rel="stylesheet" type="text/css" href="/public/css/content.css">
+	<link rel="stylesheet" type="text/css" href="/public/css/profile.css">
+</head>
+<body>
+	<%- include ('header.ejs', {role: role}) %>
+	<div class="wrapper">
+		<div class="content">
+			<form action="/editProfile" method="post">
+				<div class="input_wrap">
+					<label>Name</label>
+					<div class="input_field">
+						<input type="text" class="input" id="input_text" name="Name" value="<%- user.name %>">
+					</div>
+				</div>
+				<div class="input_wrap">
+					<label>Surname</label>
+					<div class="input_field">
+						<input type="text" class="input" id="input_text" name="Surname" value="<%- user.surname %>">
+					</div>
+				</div>
+				<div class="input_wrap">
+					<label>Email</label>
+					<div class="input_field">
+						<input type="text" class="input" id="input_text" name="Email" value="<%- user.email %>">
+					</div>
+				</div>
+				<div class="input_wrap">
+					<label>Password</label>
+					<div class="input_field">
+						<input type="password" class="input" id="input_text" name="Password" value="<%- user.password %>">
+					</div>
+				</div>
+				<div class="submitBtn">
+					<input type="hidden" name="_id" value="<%- user._id %>">
+					<% if (role == "admin") { %>
+						<% if (user.active) { %>
+							<input type="submit" class="disableBtn" value="Disable profile" onclick="this.form.action = '/activeProlife';">
+						<% } else { %>
+							<input type="submit" class="enableBtn" value="Enable profile" onclick="this.form.action = '/activeProlife';">
+						<% }; %>
+						<input type="submit" class="todosBtn" value="Open user todos" onclick="this.form.action = '/todosProfile';">
+					<% }; %>
+					<input type="submit" class="removeBtn" value="Remove" onclick="this.form.action = '/removeProfile';">
+					<input type="submit" class="editBtn" value="Edit">
+				</div>
+			</form>
+		</div>
+	</div>
+</body>
+</html>

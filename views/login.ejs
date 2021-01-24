@@ -2,14 +2,14 @@
 <html>
 <head>
 	<meta charset="utf-8"></head>
-	<title>Login</title>
+	<title>Todos</title>
 	<link rel="stylesheet" type="text/css" href="/public/css/login.css">
 </head>
 <body>
 	<div class="wrapper">
 		<div class="form">
 			<div class="title">Login</div>
-			<form method="post" action="/">
+			<form method="post" action="/login">
 				<div class="input_wrap">
 					<label for="input_text">Email</label>
 					<div class="input_field">
@@ -30,7 +30,7 @@
 					<span class="error_msg">This account is already exist</span>
 					<% }; %>
 					<input type="submit" id="signUp_btn" class="btn" value="SIGN UP" onclick="this.form.action = '/signUp'; this.form.method = 'get';">
-					<input type="submit" id="login_btn" class="btn" value="LOGIN" onclick="this.form.action = '/'; this.form.method = 'post';">
+					<input type="submit" id="login_btn" class="btn" value="LOGIN" onclick="this.form.action = '/login'; this.form.method = 'post';">
 				</div>
 			</form>
 		</div>
