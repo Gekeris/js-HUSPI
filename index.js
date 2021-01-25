@@ -123,7 +123,6 @@ app.post('/createTodo', function (req, res) {
 });
 
 app.post('/newTodo', urlEncodedParser, async function (req, res) {
-  var result = await dbhelp.findById(req.body.todo_id, "todo");
   if (req.body.Name.length > 0 && req.body.Text.length > 0) {
     var todo = {
       userTodoId: req.session.userID,
@@ -184,25 +183,22 @@ app.get('/profile', function (req, res) {
 });
 
 app.get('/profile/:id', async function (req, res) {
-  var result = dbhelp.findById(req.params.id, 'users');
+  var result = await dbhelp.findById(req.params.id, 'users');
   var client = await MongoClient.connect('mongodb://localhost:27017');
   if (req.session.role == "admin" || result._id == req.session.userID) {
-    collection.findOne(result, function (err, result2) {
-      if (err) { throw err };
-      client.close();
-      res.render('profile', { user: result2, role: req.session.role});
-    });
+    client.close();
+    res.render('profile', { user: result, role: req.session.role});
   }
   else {
     client.close();
-    res.render('/');
+    res.redirect('/');
   };
 });
 
 app.post('/editProfile', urlEncodedParser, async function (req, res) {
-  var result = dbhelp.findById(req.body._id, 'users');
+  var result = await dbhelp.findById(req.body._id, 'users');
   var client = await MongoClient.connect('mongodb://localhost:27017');
-  client.db('todos').collection('users').updateOne(re, { $set: { "name": req.body.Name, "surname": req.body.Surname, "email": req.body.Email, "password": req.body.Password } }, function (err) {
+  client.db('todos').collection('users').updateOne(result, { $set: { "name": req.body.Name, "surname": req.body.Surname, "email": req.body.Email, "password": req.body.Password } }, function (err) {
     if (err) { throw err };
     client.close();
     res.redirect('/');
@@ -210,9 +206,9 @@ app.post('/editProfile', urlEncodedParser, async function (req, res) {
 });
 
 app.post('/removeProfile', urlEncodedParser, async function (req, res) {
-  var result = dbhelp.findById(req.body._id, 'users');
+  var result = await dbhelp.findById(req.body._id, 'users');
   var client = await MongoClient.connect('mongodb://localhost:27017');
-  client.db('todos').collection('users').deleteOne(re, function (err) {
+  client.db('todos').collection('users').deleteOne(result, function (err) {
     if (err) { throw err };
     client.close();
     if (result._id == req.session.userID) {
@@ -228,9 +224,9 @@ app.post('/removeProfile', urlEncodedParser, async function (req, res) {
 });
 
 app.post('/activeProlife', urlEncodedParser, async function (req, res) {
-  var result = dbhelp.findById(req.body._id, 'users');
+  var result = await dbhelp.findById(req.body._id, 'users');
   var client = await MongoClient.connect('mongodb://localhost:27017');
-  client.db('todos').collection('users').updateOne(re, {$set: { "active": !re.active } }, function (err) {
+  client.db('todos').collection('users').updateOne(result, {$set: { "active": !result.active } }, function (err) {
     if (err) { throw err };
     client.close();
     if (result._id == req.session.userID) {
@@ -246,13 +242,10 @@ app.post('/activeProlife', urlEncodedParser, async function (req, res) {
 });
 
 app.post('/todosProfile', urlEncodedParser, async function (req, res) {
-  var result = dbhelp.findById(req.body._id, 'users');
   var client = await MongoClient.connect('mongodb://localhost:27017');
-  client.db('todos').collection('todo').find({ userTodoId: result._id }).toArray(function (err2, result3) {
-    if (err2) { throw err2 };
-    res.render('home', {role: req.session.role, todosList: result3, change: false});
-    client.close();
-  });
+  var result = await client.db('todos').collection('todo').find({ userTodoId: req.body._id }).toArray();
+  client.close();
+  res.render('home', {role: req.session.role, todosList: result, change: false});
 });
 
 // app.use(function(req, res, next) {
