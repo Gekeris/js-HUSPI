@@ -10,43 +10,79 @@
 	<%- include ('header.ejs', {role: role}) %>
 	<div class="wrapper">
 		<div class="content">
-			<form action="/editProfile" method="post">
+			<% if ( locals.user ) { %>
+				<form action="/editProfile" method="post">
+			<% } else { %>
+				<form action="/createAccount" method="post">
+			<% }; %>
+				<% if (locals.empty_fields) { %>
+					<span class="error_msg">All fields must be filled</span>
+				<% }; %>
 				<div class="input_wrap">
 					<label>Name</label>
 					<div class="input_field">
-						<input type="text" class="input" id="input_text" name="Name" value="<%- user.name %>">
+						<% if ( locals.user ) { %>
+							<input type="text" class="input" id="input_text" name="Name" value="<%- user.name %>">
+						<% } else { %>
+							<input type="text" class="input" id="input_text" name="Name">
+						<% }; %>
 					</div>
 				</div>
 				<div class="input_wrap">
 					<label>Surname</label>
 					<div class="input_field">
-						<input type="text" class="input" id="input_text" name="Surname" value="<%- user.surname %>">
+						<% if ( locals.user ) { %>
+							<input type="text" class="input" id="input_text" name="Surname" value="<%- user.surname %>">
+						<% } else { %>
+							<input type="text" class="input" id="input_text" name="Surname">
+						<% }; %>
 					</div>
 				</div>
 				<div class="input_wrap">
 					<label>Email</label>
 					<div class="input_field">
-						<input type="text" class="input" id="input_text" name="Email" value="<%- user.email %>">
+						<% if ( locals.user ) { %>
+							<input type="text" class="input" id="input_text" name="Email" value="<%- user.email %>">
+						<% } else { %>
+							<input type="text" class="input" id="input_text" name="Email">
+						<% }; %>
 					</div>
 				</div>
 				<div class="input_wrap">
 					<label>Password</label>
 					<div class="input_field">
-						<input type="password" class="input" id="input_text" name="Password" value="<%- user.password %>">
+						<% if ( locals.user ) { %>
+							<input type="password" class="input" id="input_text" name="Password" value="<%- user.password %>">
+						<% } else { %>
+							<input type="password" class="input" id="input_text" name="Password">
+						<% }; %>
 					</div>
 				</div>
+				<% if ( !locals.user ) { %>
+					<div class="input_wrap">
+						<label>Role</label>
+						<div class="input_field">
+							<input type="radio" class="input" id="input_text" name="Role" value="admin" style="width: auto">Admin</input>
+							<input type="radio" class="input" id="input_text" name="Role" value="user" style="width: auto" checked="true">User</input>
+						</div>
+					</div>
+				<% }; %>
 				<div class="submitBtn">
-					<input type="hidden" name="_id" value="<%- user._id %>">
-					<% if (role == "admin") { %>
-						<% if (user.active) { %>
-							<input type="submit" class="disableBtn" value="Disable profile" onclick="this.form.action = '/activeProlife';">
-						<% } else { %>
-							<input type="submit" class="enableBtn" value="Enable profile" onclick="this.form.action = '/activeProlife';">
+					<% if ( locals.user ) { %>
+						<input type="hidden" name="_id" value="<%- user._id %>">
+						<% if (role == "admin") { %>
+							<% if (user.active) { %>
+								<input type="submit" class="disableBtn" value="Disable profile" onclick="this.form.action = '/activeProlife';">
+							<% } else { %>
+								<input type="submit" class="enableBtn" value="Enable profile" onclick="this.form.action = '/activeProlife';">
+							<% }; %>
+							<input type="submit" class="todosBtn" value="Open user todos" onclick="this.form.action = '/todosProfile';">
 						<% }; %>
-						<input type="submit" class="todosBtn" value="Open user todos" onclick="this.form.action = '/todosProfile';">
+						<input type="submit" class="removeBtn" value="Remove" onclick="this.form.action = '/removeProfile';">
+						<input type="submit" class="editBtn" value="Edit">
+					<% } else { %>
+						<input type="submit" class="editBtn" value="Create">
 					<% }; %>
-					<input type="submit" class="removeBtn" value="Remove" onclick="this.form.action = '/removeProfile';">
-					<input type="submit" class="editBtn" value="Edit">
 				</div>
 			</form>
 		</div>

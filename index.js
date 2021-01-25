@@ -2,7 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const MongoClient = require('mongodb').MongoClient;
 const session = require('express-session');
-const datatime = require('node-datetime');
+const datetime = require('node-datetime');
 const dbhelp = require('./dbhelp');
 
 var app = express();
@@ -32,11 +32,15 @@ app.get('/', async function (req, res) {
 
 app.post('/login', urlEncodedParser, async function (req, res) {
   var client = await MongoClient.connect('mongodb://localhost:27017');
-  var result = await client.db('todos').collection('users').findOne({ email: req.body.email.toLowerCase(), password: req.body.password, active: true });
+  var result = await client.db('todos').collection('users').findOne({ email: req.body.email.toLowerCase(), password: req.body.password });
   if (result) {
-    req.session.role = result.role;
-    req.session.userID = result._id;
-    res.redirect('/');
+    if (result.active) {
+      req.session.role = result.role;
+      req.session.userID = result._id;
+      res.redirect('/');
+    } else {
+      res.render('login', { account_disabled: true });
+    }
   }
   else {
     res.render('login', { login_failed: true });
@@ -109,16 +113,16 @@ app.get('/userlist', async function (req, res) {
 app.post('/complete', urlEncodedParser, async function (req, res) {
   var result = await dbhelp.findById(req.body.todo_id, "todo");
   var cmp = req.body.completedCheckbox ? true : false;
-  var cmpData = req.body.completedCheckbox ? datatime.create().format('d.m.Y H:M:S') : "";
+  var cmpDate = req.body.completedCheckbox ? datetime.create().format('d.m.Y H:M:S') : "";
   var client = await MongoClient.connect('mongodb://localhost:27017')
-  client.db('todos').collection('todo').updateOne(result, {$set: { "Completed" : cmp, "Data" : cmpData} }, function (err2) {
+  client.db('todos').collection('todo').updateOne(result, {$set: { "Completed" : cmp, "Date" : cmpDate} }, function (err2) {
     if (err2) throw err2;
     client.close();
     res.redirect('/');
   });
 });
 
-app.post('/createTodo', function (req, res) {
+app.get('/createTodo', function (req, res) {
   res.render("editTodo")
 });
 
@@ -127,7 +131,7 @@ app.post('/newTodo', urlEncodedParser, async function (req, res) {
     var todo = {
       userTodoId: req.session.userID,
       Name: req.body.Name,
-	    Data: "",
+	    Date: "",
 	    Completed: false,
 	    Text: req.body.Text
 	  };
@@ -157,7 +161,7 @@ app.post('/editTodo', urlEncodedParser, async function (req, res) {
   var result = await dbhelp.findById(req.body.todo_id, "todo");
   if (req.body.Name.length > 0 && req.body.Text.length > 0) {
     var client = await MongoClient.connect('mongodb://localhost:27017');
-    client.db('todos').collection('todo').updateOne(result, {$set: { "Name": req.body.Name, "Text": req.body.Text, "Data": "" , "Completed": false, } }, function (err) {
+    client.db('todos').collection('todo').updateOne(result, {$set: { "Name": req.body.Name, "Text": req.body.Text, "Date": "" , "Completed": false, } }, function (err) {
       if (err) throw err;
       client.close();
       res.redirect('/');
@@ -184,25 +188,27 @@ app.get('/profile', function (req, res) {
 
 app.get('/profile/:id', async function (req, res) {
   var result = await dbhelp.findById(req.params.id, 'users');
-  var client = await MongoClient.connect('mongodb://localhost:27017');
   if (req.session.role == "admin" || result._id == req.session.userID) {
-    client.close();
     res.render('profile', { user: result, role: req.session.role});
   }
   else {
-    client.close();
     res.redirect('/');
   };
 });
 
 app.post('/editProfile', urlEncodedParser, async function (req, res) {
   var result = await dbhelp.findById(req.body._id, 'users');
-  var client = await MongoClient.connect('mongodb://localhost:27017');
-  client.db('todos').collection('users').updateOne(result, { $set: { "name": req.body.Name, "surname": req.body.Surname, "email": req.body.Email, "password": req.body.Password } }, function (err) {
-    if (err) { throw err };
-    client.close();
-    res.redirect('/');
-  });
+  if (req.body.Name.length > 0 && req.body.Surname.length > 0 && req.body.Email.length > 0 && req.body.Password.length > 0 ) {
+    var client = await MongoClient.connect('mongodb://localhost:27017');
+    client.db('todos').collection('users').updateOne(result, { $set: { "name": req.body.Name, "surname": req.body.Surname, "email": req.body.Email, "password": req.body.Password } }, function (err) {
+      if (err) { throw err };
+      client.close();
+      res.redirect('/');
+    });
+  }
+  else {
+    res.render('profile', { user: result, role: req.session.role, empty_fields:true});
+  }
 });
 
 app.post('/removeProfile', urlEncodedParser, async function (req, res) {
@@ -248,9 +254,36 @@ app.post('/todosProfile', urlEncodedParser, async function (req, res) {
   res.render('home', {role: req.session.role, todosList: result, change: false});
 });
 
-// app.use(function(req, res, next) {
-//   res.render('404');
-// });
+app.get('/createAccountPage', function (req, res) {
+  res.render('profile', { role:req.session.role });
+});
+
+app.post('/createAccount', urlEncodedParser, async function (req, res) {
+  if (req.body.Name.length > 0 && req.body.Surname.length > 0 && req.body.Email.length > 0 && req.body.Password.length > 0 ) {
+    var user = {
+      name: req.body.Name,
+      surname: req.body.Surname,
+      email: req.body.Email,
+      password: req.body.Password,
+      active: true,
+      role: req.body.Role
+    };
+
+    var client = await MongoClient.connect('mongodb://localhost:27017')
+    client.db('todos').collection('users').insertOne(user, function (err) {
+      if (err) { throw err; }
+      client.close();
+      res.redirect('/userlist');
+    });
+  }
+  else {
+    res.render('profile', { role:req.session.role, empty_fields: true });
+  }
+});
+
+app.use(function(req, res, next) {
+  res.render('404');
+});
 
 app.listen(3000, function () {
   console.log("Server start at port - 3000");

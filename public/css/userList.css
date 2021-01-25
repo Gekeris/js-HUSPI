@@ -7,7 +7,7 @@
   justify-content: space-between;
 }
 
-.content button {
+.content ul button {
   background-color: #302B27;
   border-color: grey;
   border-width: 1px;
@@ -23,4 +23,18 @@
 .content .off {
   background-color: darkred;
   border-color: gold;
+}
+
+.createAccountForm div{
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.createAccountForm button{
+  background: #1dbf73;
+  border:0px;
+  padding: 10px 5px;
+  border-radius: 3px;
+  font-size: 16px;
 }
