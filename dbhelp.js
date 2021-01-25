@@ -21,3 +21,11 @@ module.exports.findById = async function (id, _collection) {
   client.close();
   return obj;
 };
+
+module.exports.getFullUserList = async function () {
+  var client = await MongoClient.connect('mongodb://localhost:27017');
+  var collection = client.db('todos').collection('users');
+  var result = await collection.find({ }).toArray();
+  client.close();
+  return result;
+};

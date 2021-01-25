@@ -1,4 +1,8 @@
 <link rel="stylesheet" type="text/css" href="/public/css/header.css">
+<% if(role == "admin") { %>
+	<script src="/socket.io/socket.io.js"></script>
+	<script src="/public/js/adminPush.js"></script>
+<% }; %>
 <div class="header">
 	<div class="inner_header">
 		<div class="welcome">

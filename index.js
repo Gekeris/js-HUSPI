@@ -1,12 +1,15 @@
 const express = require('express');
+const app = express();
 const bodyParser = require('body-parser');
 const MongoClient = require('mongodb').MongoClient;
 const session = require('express-session');
 const datetime = require('node-datetime');
 const dbhelp = require('./dbhelp');
+const server = require('http').Server(app);
+const io = require('socket.io')(server);
 
-var app = express();
 var urlEncodedParser = bodyParser.urlencoded({extended: false});
+var connections = [];
 
 app.set('view engine', 'ejs');
 app.use('/public', express.static('public'));
@@ -15,7 +18,6 @@ app.use(session({
     secret: 'LHqH4IXmGa7yQPVCZn53wTanhAirvmZe',
     saveUninitialized: true,
 }));
-
 app.get('/', async function (req, res) {
   if (req.session.role) {
     var client = await MongoClient.connect('mongodb://localhost:27017');
@@ -26,6 +28,7 @@ app.get('/', async function (req, res) {
     });
   }
   else {
+
     res.render('login');
   }
 });
@@ -69,9 +72,12 @@ app.post('/signUp', urlEncodedParser, async function (req, res) {
         active: true,
         role: req.body.role
       };
-      client.db('todos').collection('users').insertOne(user, function (err) {
+      client.db('todos').collection('users').insertOne(user, async function (err) {
         if (err) { console.log(err3); return; }
         client.close();
+        io.sockets.emit('newUserAlert', user);
+        io.sockets.emit('userListUpdate', await dbhelp.getFullUserList());
+
         res.redirect('/');
       });
     };
@@ -88,6 +94,13 @@ app.use(function(req, res, next) {
   else {
     res.redirect('/');
   }
+});
+
+io.on('connection', function (socket) {
+    connections.push(socket);
+    socket.on('disconnect', function (data) {
+        connections.splice(connections.indexOf(socket), 1);
+    })
 });
 
 app.get('/logout', function (req, res) {
@@ -200,9 +213,10 @@ app.post('/editProfile', urlEncodedParser, async function (req, res) {
   var result = await dbhelp.findById(req.body._id, 'users');
   if (req.body.Name.length > 0 && req.body.Surname.length > 0 && req.body.Email.length > 0 && req.body.Password.length > 0 ) {
     var client = await MongoClient.connect('mongodb://localhost:27017');
-    client.db('todos').collection('users').updateOne(result, { $set: { "name": req.body.Name, "surname": req.body.Surname, "email": req.body.Email, "password": req.body.Password } }, function (err) {
+    client.db('todos').collection('users').updateOne(result, { $set: { "name": req.body.Name, "surname": req.body.Surname, "email": req.body.Email, "password": req.body.Password } }, async function (err) {
       if (err) { throw err };
       client.close();
+      io.sockets.emit('userListUpdate', await dbhelp.getFullUserList());
       res.redirect('/');
     });
   }
@@ -214,9 +228,10 @@ app.post('/editProfile', urlEncodedParser, async function (req, res) {
 app.post('/removeProfile', urlEncodedParser, async function (req, res) {
   var result = await dbhelp.findById(req.body._id, 'users');
   var client = await MongoClient.connect('mongodb://localhost:27017');
-  client.db('todos').collection('users').deleteOne(result, function (err) {
+  client.db('todos').collection('users').deleteOne(result, async function (err) {
     if (err) { throw err };
     client.close();
+    io.sockets.emit('userListUpdate', await dbhelp.getFullUserList());
     if (result._id == req.session.userID) {
       req.session.role = undefined;
       req.session.email = undefined;
@@ -232,9 +247,10 @@ app.post('/removeProfile', urlEncodedParser, async function (req, res) {
 app.post('/activeProlife', urlEncodedParser, async function (req, res) {
   var result = await dbhelp.findById(req.body._id, 'users');
   var client = await MongoClient.connect('mongodb://localhost:27017');
-  client.db('todos').collection('users').updateOne(result, {$set: { "active": !result.active } }, function (err) {
+  client.db('todos').collection('users').updateOne(result, {$set: { "active": !result.active } }, async function (err) {
     if (err) { throw err };
     client.close();
+    io.sockets.emit('userListUpdate', await dbhelp.getFullUserList());
     if (result._id == req.session.userID) {
       req.session.role = undefined;
       req.session.email = undefined;
@@ -270,9 +286,11 @@ app.post('/createAccount', urlEncodedParser, async function (req, res) {
     };
 
     var client = await MongoClient.connect('mongodb://localhost:27017')
-    client.db('todos').collection('users').insertOne(user, function (err) {
+    client.db('todos').collection('users').insertOne(user, async function (err) {
       if (err) { throw err; }
       client.close();
+      io.sockets.emit('newUserAlert', user);
+      io.sockets.emit('userListUpdate', await dbhelp.getFullUserList());
       res.redirect('/userlist');
     });
   }
@@ -285,6 +303,6 @@ app.use(function(req, res, next) {
   res.render('404');
 });
 
-app.listen(3000, function () {
+server.listen(3000, function () {
   console.log("Server start at port - 3000");
 });
